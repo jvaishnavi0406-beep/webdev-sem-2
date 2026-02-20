@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="1.css">
+    <title>Event Manager</title>
+
+</head>
+
+<body>
+    <h1>Event Management System</h1>
+
+    <div id="upper">
+        <div id="form">
+            <h2>Add New Event</h2>
+            <label>Event Title:</label>
+            <input type="text" id="title" placeholder="Enter event title">
+
+            <label>Date:</label>
+            <input type="date" id="date">
+
+            <label>Category:</label>
+            <select id="select">
+                <option value="meeting">Meeting</option>
+                <option value="conference">Conference</option>
+                <option value="workshop">Workshop</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label>Description:</label>
+            <textarea id="des" placeholder="Enter description"></textarea>
+
+            <button id="add">Add Event</button>
+        </div>
+
+        <div id="myevent">
+            <h2>My Events</h2>
+            <div id="box"></div>
+            <div class="button-group">
+                <button id="clearAll">Clear All</button>
+                <button id="loadSample">Load Sample</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="lower">
+        <h2>DOM Manipulation Demo</h2>
+        <div id="demo">
+            <p>Press any key: <span id="keyDisplay"></span></p>
+
+        </div>
+    </div>
+
+    <script>
+        let events = [];
+
+        document.getElementById("add").addEventListener("click", addEvent);
+
+        function addEvent(e) {
+            e.preventDefault();
+
+            let title = document.getElementById("title").value;
+            let date = document.getElementById("date").value;
+            let category = document.getElementById("select").value;
+            let description = document.getElementById("des").value;
+
+            console.log(title, date, category, description);
+
+
+            if (!title || !date) {
+                alert("Please fill in title and date!");
+                return;
+            }
+
+            let NewEvent = {
+                title,
+                date,
+                category,
+                description
+            };
+
+            events.push(NewEvent);
+            displayDiv(NewEvent);
+
+            clearForm();
+        }
+
+        function displayDiv(event, index) {
+            const box = document.getElementById("box");
+            const div = document.createElement("div");
+            div.className = "event-card";
+
+            const title = document.createElement("h3");
+            title.textContent = event.title;
+
+            const datePara = document.createElement("p");
+            datePara.textContent = "Date: " + event.date;
+
+            const categoryPara = document.createElement("p");
+            categoryPara.textContent = "Category: " + event.category;
+
+            const descriptionPara = document.createElement("p");
+            descriptionPara.textContent = event.description;
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "x";
+            deleteBtn.className = "delete-btn";
+
+
+            deleteBtn.addEventListener("click", function () {
+                div.remove();
+
+                const eventIndex = events.indexOf(event);
+                if (eventIndex > -1) {
+                    events.splice(eventIndex, 1);
+                }
+
+            });
+
+            div.appendChild(title);
+            div.appendChild(datePara);
+            div.appendChild(categoryPara);
+            div.appendChild(descriptionPara);
+            div.appendChild(deleteBtn);
+
+            box.appendChild(div);
+        }
+
+        document.getElementById("clearAll").addEventListener("click", function () {
+            document.getElementById("box").innerHTML = "";
+            events = [];
+
+        });
+
+
+        document.getElementById("loadSample").addEventListener("click", function () {
+            const sampleData = [
+                {
+                    title: "Tech Conference",
+                    date: "2026-03-10",
+                    category: "Conference",
+                    description: "Annual tech meetup."
+                },
+                {
+                    title: "Web Workshop",
+                    date: "2026-04-15",
+                    category: "Workshop",
+                    description: "Frontend development workshop."
+                }
+            ];
+
+            sampleData.forEach(ev => {
+                events.push(ev);
+                displayDiv(ev);
+            });
+        });
+
+        document.addEventListener("keydown", function (event) {
+            document.getElementById("keyDisplay").textContent = event.key;
+        });
+
+
+        function clearForm() {
+            document.getElementById("title").value = "";
+            document.getElementById("date").value = "";
+            document.getElementById("select").value = "";
+            document.getElementById("des").value = "";
+        }
+    </script>
+</body>
+
+</html>
